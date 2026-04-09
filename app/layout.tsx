@@ -4,6 +4,10 @@ import Navbar from "@/components/Navbar";
 import { ContactProvider } from "@/context/ContactContext";
 import { InvoiceProvider } from "@/context/InvoiceContext";
 import { SettingsProvider } from "@/context/SettingsContext";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "FLOWTRACK",
@@ -16,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className="min-h-screen max-w-full overflow-x-hidden">
         <ContactProvider>
           <SettingsProvider>

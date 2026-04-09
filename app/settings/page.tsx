@@ -5,41 +5,50 @@ import { defaultWorkspaceSettings, type WorkspaceSettings, useSettings } from "@
 
 const fieldClassName = "w-full rounded-2xl border border-red-900/70 bg-black/15 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 transition focus:outline-none focus:ring-2 focus:ring-red-800/60";
 
-export default function SettingsPage() {
-    const { settings, updateSettings, resetSettings } = useSettings();
-    const [formState, setFormState] = useState<WorkspaceSettings>(settings);
+const normalizeWorkspaceSettings = (formState: WorkspaceSettings): WorkspaceSettings => ({
+    workspaceName: formState.workspaceName.trim() || defaultWorkspaceSettings.workspaceName,
+    workspaceEmail: formState.workspaceEmail.trim(),
+    workspacePhone: formState.workspacePhone.trim(),
+    workspaceAddress: formState.workspaceAddress.trim(),
+    defaultCurrency: formState.defaultCurrency.trim().toUpperCase() || defaultWorkspaceSettings.defaultCurrency,
+    defaultTaxRate: Number.isFinite(formState.defaultTaxRate) ? Math.max(0, formState.defaultTaxRate) : defaultWorkspaceSettings.defaultTaxRate,
+    paymentTerms: formState.paymentTerms.trim() || defaultWorkspaceSettings.paymentTerms,
+    defaultNotes: formState.defaultNotes.trim() || defaultWorkspaceSettings.defaultNotes,
+    density: formState.density,
+    showDashboardGreeting: formState.showDashboardGreeting,
+});
+
+function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings }) {
+    const { updateSettings, resetSettings } = useSettings();
+    const [formState, setFormState] = useState<WorkspaceSettings>(initialSettings);
     const [saveMessage, setSaveMessage] = useState("Your workspace preferences are stored locally on this device.");
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+    const normalizedFormState = normalizeWorkspaceSettings(formState);
 
     const handleFieldChange = <Key extends keyof WorkspaceSettings>(field: Key, value: WorkspaceSettings[Key]) => {
         setFormState((currentForm) => ({
             ...currentForm,
             [field]: value,
         }));
+        setHasUnsavedChanges(true);
+        setSaveMessage("You have unsaved changes.");
     };
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        updateSettings({
-            workspaceName: formState.workspaceName.trim(),
-            workspaceEmail: formState.workspaceEmail.trim(),
-            workspacePhone: formState.workspacePhone.trim(),
-            workspaceAddress: formState.workspaceAddress.trim(),
-            defaultCurrency: formState.defaultCurrency.trim().toUpperCase(),
-            defaultTaxRate: Number.isFinite(formState.defaultTaxRate) ? formState.defaultTaxRate : defaultWorkspaceSettings.defaultTaxRate,
-            paymentTerms: formState.paymentTerms.trim(),
-            defaultNotes: formState.defaultNotes.trim(),
-            density: formState.density,
-            showDashboardGreeting: formState.showDashboardGreeting,
-        });
-
+        updateSettings(normalizedFormState);
+        setFormState(normalizedFormState);
         setSaveMessage("Settings saved locally and ready to power invoices and workspace defaults.");
+        setHasUnsavedChanges(false);
     };
 
     const handleReset = () => {
         resetSettings();
         setFormState(defaultWorkspaceSettings);
         setSaveMessage("Settings reset to the local defaults for this workspace.");
+        setHasUnsavedChanges(false);
     };
 
     return (
@@ -140,18 +149,19 @@ export default function SettingsPage() {
                             <h2 className="text-2xl font-bold text-zinc-50">Current Defaults</h2>
                         </div>
                         <div className="mt-5 space-y-3 rounded-3xl border border-red-950/60 bg-black/10 p-4 text-sm leading-6 text-zinc-300">
-                            <p><span className="text-zinc-500">Workspace:</span> {formState.workspaceName}</p>
-                            <p><span className="text-zinc-500">Currency:</span> {formState.defaultCurrency}</p>
-                            <p><span className="text-zinc-500">Tax Rate:</span> {formState.defaultTaxRate}%</p>
-                            <p><span className="text-zinc-500">Terms:</span> {formState.paymentTerms}</p>
-                            <p><span className="text-zinc-500">Density:</span> {formState.density}</p>
+                            <p><span className="text-zinc-500">Workspace:</span> {normalizedFormState.workspaceName}</p>
+                            <p><span className="text-zinc-500">Currency:</span> {normalizedFormState.defaultCurrency}</p>
+                            <p><span className="text-zinc-500">Tax Rate:</span> {normalizedFormState.defaultTaxRate}%</p>
+                            <p><span className="text-zinc-500">Terms:</span> {normalizedFormState.paymentTerms}</p>
+                            <p><span className="text-zinc-500">Density:</span> {normalizedFormState.density}</p>
+                            <p><span className="text-zinc-500">Greeting:</span> {normalizedFormState.showDashboardGreeting ? "Visible" : "Hidden"}</p>
                         </div>
                         <p className="mt-4 text-sm leading-6 text-zinc-400">{saveMessage}</p>
                     </section>
 
                     <section className="rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
                         <div className="flex flex-col gap-3">
-                            <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-800 px-6 py-3 text-sm font-semibold text-zinc-50 shadow-[0_10px_30px_rgba(127,29,29,0.35)] transition hover:bg-red-700"><Save size={16} />Save Settings</button>
+                            <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-800 px-6 py-3 text-sm font-semibold text-zinc-50 shadow-[0_10px_30px_rgba(127,29,29,0.35)] transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-950/60 disabled:text-zinc-400" disabled={!hasUnsavedChanges}><Save size={16} />Save Settings</button>
                             <button type="button" onClick={handleReset} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-red-900/70 px-6 py-3 text-sm font-medium text-zinc-200 transition hover:bg-red-950/30"><RefreshCcw size={16} />Reset to Defaults</button>
                         </div>
                     </section>
@@ -159,4 +169,11 @@ export default function SettingsPage() {
             </form>
         </div>
     );
+}
+
+export default function SettingsPage() {
+    const { settings } = useSettings();
+    const settingsKey = JSON.stringify(settings);
+
+    return <SettingsForm key={settingsKey} initialSettings={settings} />;
 }

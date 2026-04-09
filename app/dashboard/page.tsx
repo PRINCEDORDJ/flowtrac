@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { BriefcaseBusiness, CircleCheckBig, Clock3, MoveRight, Users } from "lucide-react";
 import { useContacts } from "@/context/ContactContext";
+import { useSettings } from "@/context/SettingsContext";
 import ContactDetails from "@/components/ContactDetails";
 
 interface MetricCardProps {
@@ -36,6 +37,7 @@ const MetricCard = ({ eyebrow, title, value, detail, icon, className = "" }: Met
 
 export default function Dashboard() {
     const { contacts } = useContacts();
+    const { settings } = useSettings();
     const [nowTimestamp] = useState(() => Date.now());
 
     const recentContacts = contacts.filter((contact) => {
@@ -85,13 +87,15 @@ export default function Dashboard() {
 
     return (
       <div className="w-full space-y-8 md:space-y-10">
-        <div className="flex flex-col gap-3 px-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-red-300/60">Overview</p>
-          <h1 className="text-3xl font-bold text-zinc-50 sm:text-4xl">{getHours()}</h1>
-          <p className="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-            Here&apos;s a quick view of your contact activity and data quality across Flowtrack.
-          </p>
-        </div>
+        {settings.showDashboardGreeting ? (
+          <div className="flex flex-col gap-3 px-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-red-300/60">Overview</p>
+            <h1 className="text-3xl font-bold text-zinc-50 sm:text-4xl">{getHours()}</h1>
+            <p className="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+              Here&apos;s a quick view of your contact activity and data quality across {settings.workspaceName}.
+            </p>
+          </div>
+        ) : null}
 
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 xl:gap-5">
           <article className="overflow-hidden rounded-[1.75rem] border border-red-900/60 bg-linear-to-br from-red-950/85 via-red-950/60 to-red-900/30 xl:col-span-2">

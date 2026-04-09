@@ -72,6 +72,12 @@ const normalizeSettings = (value: unknown): WorkspaceSettings => {
     };
 };
 
+const buildNormalizedSettings = (settings: WorkspaceSettings): WorkspaceSettings =>
+    normalizeSettings({
+        ...defaultWorkspaceSettings,
+        ...settings,
+    });
+
 const readSettings = (): WorkspaceSettings => {
     if (typeof window === "undefined") {
         return defaultWorkspaceSettings;
@@ -121,10 +127,11 @@ const subscribeToSettings = (callback: () => void) => {
 };
 
 const saveSettings = (settings: WorkspaceSettings) => {
-    const serializedSettings = JSON.stringify(settings);
+    const normalizedSettings = buildNormalizedSettings(settings);
+    const serializedSettings = JSON.stringify(normalizedSettings);
 
     cachedSettingsRaw = serializedSettings;
-    cachedSettings = settings;
+    cachedSettings = normalizedSettings;
 
     window.localStorage.setItem(SETTINGS_STORAGE_KEY, serializedSettings);
     window.dispatchEvent(new Event(SETTINGS_STORAGE_EVENT));
@@ -134,10 +141,10 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     const settings = useSyncExternalStore(subscribeToSettings, readSettings, () => defaultWorkspaceSettings);
 
     const updateSettings = (updates: Partial<WorkspaceSettings>) => {
-        saveSettings({
+        saveSettings(buildNormalizedSettings({
             ...settings,
             ...updates,
-        });
+        }));
     };
 
     const resetSettings = () => {
