@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { Suspense, useState, type FormEvent } from "react";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import {
   useInvoices,
@@ -437,9 +437,7 @@ function InvoiceAddForm({
               <p className="text-sm text-zinc-300">
                 Tax Rate: {defaultTaxRate}%
               </p>
-              <p className="text-sm text-zinc-300">
-                Terms: {paymentTerms}
-              </p>
+              <p className="text-sm text-zinc-300">Terms: {paymentTerms}</p>
             </div>
             <div className="rounded-3xl border border-red-950/60 bg-black/10 p-5">
               <input
@@ -507,7 +505,7 @@ function InvoiceAddForm({
   );
 }
 
-export default function InvoiceAddPage() {
+function InvoiceAddPageClient() {
   const searchParams = useSearchParams();
   const { invoices, addInvoice, updateInvoice } = useInvoices();
   const { settings } = useSettings();
@@ -534,5 +532,13 @@ export default function InvoiceAddPage() {
       addInvoice={addInvoice}
       updateInvoice={updateInvoice}
     />
+  );
+}
+
+export default function InvoiceAddPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <InvoiceAddPageClient />
+    </Suspense>
   );
 }
