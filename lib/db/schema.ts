@@ -1,7 +1,7 @@
 import { pgTable, serial, text, timestamp, varchar, integer, boolean, doublePrecision } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: text("id").primaryKey(), // Kinde user ID
   name: text("name").notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -9,7 +9,7 @@ export const users = pgTable("users", {
 
 export const activityLogs = pgTable("activity_logs", {
   id: serial("id").primaryKey(),
-  userId: serial("user_id").references(() => users.id),
+  userId: text("user_id").references(() => users.id),
   action: text("action").notNull(),
   details: text("details"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -17,6 +17,7 @@ export const activityLogs = pgTable("activity_logs", {
 
 export const contacts = pgTable("contacts", {
   id: serial("id").primaryKey(),
+  userId: text("user_id").references(() => users.id).notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
@@ -25,7 +26,7 @@ export const contacts = pgTable("contacts", {
 });
 
 export const settings = pgTable("settings", {
-  id: integer("id").primaryKey(), // Single row with id 1
+  userId: text("user_id").primaryKey().references(() => users.id),
   workspaceName: text("workspace_name").notNull(),
   workspaceEmail: text("workspace_email").notNull(),
   workspacePhone: text("workspace_phone").notNull(),
@@ -41,6 +42,7 @@ export const settings = pgTable("settings", {
 
 export const invoices = pgTable("invoices", {
   id: serial("id").primaryKey(),
+  userId: text("user_id").references(() => users.id).notNull(),
   invoiceNumber: text("invoice_number").notNull(),
   clientName: text("client_name").notNull(),
   clientEmail: text("client_email").notNull(),

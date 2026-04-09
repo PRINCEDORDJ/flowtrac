@@ -1,15 +1,21 @@
 'use server'
 import { db } from "@/lib/db";
 import { invoices, invoiceItems } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getAuthenticatedUser } from "@/lib/kinde";
 
 export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue";
 
 export async function getInvoices() {
   try {
-    const allInvoices = await db.select().from(invoices).orderBy(desc(invoices.createdAt));
-    const allItems = await db.select().from(invoiceItems);
+    const user = await getAuthenticatedUser();
+    const allInvoices = await db.select().from(invoices).where(eq(invoices.userId, user.id)).orderBy(desc(invoices.createdAt));
+    
+    if (allInvoices.length === 0) return [];
+
+    const invoiceIds = allInvoices.map(i => i.id);
+    const allItems = await db.select().from(invoiceItems).where(inArray(invoiceItems.invoiceId, invoiceIds));
     
     return allInvoices.map(invoice => ({
       ...invoice,
@@ -38,6 +44,7 @@ export async function addInvoiceAction(data: {
   taxRate: number;
 }) {
   try {
+    const user = await getAuthenticatedUser();
     const { items, taxRate, ...invoiceData } = data;
     
     // Calculate totals
@@ -48,6 +55,7 @@ export async function addInvoiceAction(data: {
     const result = await db.transaction(async (tx) => {
       const [newInvoice] = await tx.insert(invoices).values({
         ...invoiceData,
+        userId: user.id,
         subtotal,
         tax,
         total,
@@ -67,12 +75,11 @@ export async function addInvoiceAction(data: {
         );
       }
       
-      // Return the invoice with items for the context to use
       return {
         ...newInvoice,
         items: items.map((item, idx) => ({ 
           ...item, 
-          id: idx, // Temporary ID for client-side
+          id: idx,
           invoiceId: newInvoice.id,
           lineTotal: item.quantity * item.unitPrice
         }))
@@ -104,6 +111,7 @@ export async function updateInvoiceAction(id: number, data: {
   taxRate: number;
 }) {
   try {
+    const user = await getAuthenticatedUser();
     const { items, taxRate, ...invoiceData } = data;
     
     // Calculate totals
@@ -112,6 +120,10 @@ export async function updateInvoiceAction(id: number, data: {
     const total = subtotal + tax;
 
     await db.transaction(async (tx) => {
+      // Ensure the invoice belongs to the user
+      const [existingInvoice] = await tx.select().from(invoices).where(and(eq(invoices.id, id), eq(invoices.userId, user.id)));
+      if (!existingInvoice) throw new Error("Invoice not found or unauthorized");
+
       await tx.update(invoices)
         .set({ 
           ...invoiceData, 
@@ -148,7 +160,8 @@ export async function updateInvoiceAction(id: number, data: {
 
 export async function deleteInvoiceAction(id: number) {
   try {
-    await db.delete(invoices).where(eq(invoices.id, id));
+    const user = await getAuthenticatedUser();
+    await db.delete(invoices).where(and(eq(invoices.id, id), eq(invoices.userId, user.id)));
     revalidatePath("/");
     return { success: true };
   } catch (error) {

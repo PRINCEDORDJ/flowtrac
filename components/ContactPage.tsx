@@ -1,5 +1,5 @@
 "use client";
-import Add from "@/app/contact/Add/page";
+import Add from "@/app/(dashboard)/contact/Add/page";
 import { useContacts, type Contact } from "@/context/ContactContext";
 import {
   CheckCircle2,

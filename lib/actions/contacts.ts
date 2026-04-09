@@ -1,12 +1,17 @@
 'use server'
 import { db } from "@/lib/db";
-import { contacts } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { contacts, users } from "@/lib/db/schema";
+import { eq, desc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getUser, getAuthenticatedUser } from "@/lib/kinde";
 
 export async function getContacts() {
   try {
-    return await db.select().from(contacts).orderBy(desc(contacts.createdAt));
+    const user = await getAuthenticatedUser();
+    return await db.select()
+      .from(contacts)
+      .where(eq(contacts.userId, user.id))
+      .orderBy(desc(contacts.createdAt));
   } catch (error) {
     console.error("Failed to fetch contacts:", error);
     throw new Error("Failed to fetch contacts");
@@ -15,7 +20,11 @@ export async function getContacts() {
 
 export async function addContactAction(data: { name: string; email: string; phone: string; company: string }) {
   try {
-    const [newContact] = await db.insert(contacts).values(data).returning();
+    const user = await getAuthenticatedUser();
+    const [newContact] = await db.insert(contacts).values({
+      ...data,
+      userId: user.id,
+    }).returning();
     revalidatePath("/");
     return { success: true, contact: newContact };
   } catch (error) {
@@ -26,9 +35,10 @@ export async function addContactAction(data: { name: string; email: string; phon
 
 export async function updateContactAction(id: number, data: { name: string; email: string; phone: string; company: string }) {
   try {
+    const user = await getAuthenticatedUser();
     const [updatedContact] = await db.update(contacts)
       .set(data)
-      .where(eq(contacts.id, id))
+      .where(and(eq(contacts.id, id), eq(contacts.userId, user.id)))
       .returning();
     revalidatePath("/");
     return { success: true, contact: updatedContact };
@@ -40,7 +50,8 @@ export async function updateContactAction(id: number, data: { name: string; emai
 
 export async function deleteContactAction(id: number) {
   try {
-    await db.delete(contacts).where(eq(contacts.id, id));
+    const user = await getAuthenticatedUser();
+    await db.delete(contacts).where(and(eq(contacts.id, id), eq(contacts.userId, user.id)));
     revalidatePath("/");
     return { success: true };
   } catch (error) {
