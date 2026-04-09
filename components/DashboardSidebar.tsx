@@ -39,13 +39,7 @@ export default function DashboardSidebar() {
         <div className="flex h-full flex-col gap-5 px-4 py-4 sm:px-5 sm:py-5 md:px-5 md:py-6 text-zinc-50">
           <Link href="/dashboard" className="flex items-center gap-3 px-2 py-2 mb-2 group transition-all">
             <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-red-800/50 bg-red-950/40 p-2 shadow-[0_0_20px_rgba(153,27,27,0.2)] transition-all group-hover:border-red-600/80 group-hover:shadow-[0_0_30px_rgba(153,27,27,0.4)]">
-                <Image 
-                    src={Logo}
-                    alt="Flowtrack Logo" 
-                    width={50} 
-                    height={50} 
-                    className="object-contain"
-                />
+                <h1>FT</h1>
             </div>
             <span className="text-xl font-bold tracking-tight bg-linear-to-b from-zinc-50 to-zinc-400 bg-clip-text text-transparent group-hover:from-white group-hover:to-zinc-200">
                 flowtrack
