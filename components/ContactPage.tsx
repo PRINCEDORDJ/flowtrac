@@ -24,7 +24,7 @@ export default function ContactPage() {
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [query, setQuery] = useState("");
   const [companyFilter, setCompanyFilter] = useState("all");
-  const { contacts, deleteContact } = useContacts();
+  const { contacts, deleteContact, isLoading } = useContacts();
 
   const companies = useMemo(
     () => [
@@ -51,6 +51,15 @@ export default function ContactPage() {
       return matchesQuery && matchesCompany;
     });
   }, [contacts, companyFilter, query]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-red-900 border-t-red-500" />
+        <p className="text-zinc-400">Loading contacts...</p>
+      </div>
+    );
+  }
 
   const totalContactsLabel =
     contacts.length === 0

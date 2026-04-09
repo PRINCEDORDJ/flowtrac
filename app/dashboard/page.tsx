@@ -36,9 +36,18 @@ const MetricCard = ({ eyebrow, title, value, detail, icon, className = "" }: Met
 );
 
 export default function Dashboard() {
-    const { contacts } = useContacts();
-    const { settings } = useSettings();
+    const { contacts, isLoading: contactsLoading } = useContacts();
+    const { settings, isLoading: settingsLoading } = useSettings();
     const [nowTimestamp] = useState(() => Date.now());
+
+    if (contactsLoading || settingsLoading) {
+        return (
+            <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-red-900 border-t-red-500" />
+                <p className="text-zinc-400">Loading your workspace...</p>
+            </div>
+        );
+    }
 
     const recentContacts = contacts.filter((contact) => {
         if (!contact.createdAt) {

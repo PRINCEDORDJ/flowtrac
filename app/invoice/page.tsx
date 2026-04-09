@@ -72,10 +72,19 @@ const InvoiceCard = ({ eyebrow, title, value, detail, icon }: InvoiceCardProps) 
 );
 
 export default function InvoicePage() {
-    const { invoices, deleteInvoice } = useInvoices();
-    const { settings } = useSettings();
+    const { invoices, deleteInvoice, isLoading: invoicesLoading } = useInvoices();
+    const { settings, isLoading: settingsLoading } = useSettings();
     const [filter, setFilter] = useState<InvoiceFilter>("all");
     const [todayString] = useState(() => new Date().toISOString().slice(0, 10));
+
+    if (invoicesLoading || settingsLoading) {
+        return (
+            <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-red-900 border-t-red-500" />
+                <p className="text-zinc-400">Loading billing data...</p>
+            </div>
+        );
+    }
 
     const dueSoonCutoff = new Date(new Date(todayString).getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
     const invoicesWithStatus = invoices.map((invoice) => ({

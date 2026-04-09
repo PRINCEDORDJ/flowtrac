@@ -21,7 +21,7 @@ const normalizeWorkspaceSettings = (formState: WorkspaceSettings): WorkspaceSett
 function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings }) {
     const { updateSettings, resetSettings } = useSettings();
     const [formState, setFormState] = useState<WorkspaceSettings>(initialSettings);
-    const [saveMessage, setSaveMessage] = useState("Your workspace preferences are stored locally on this device.");
+    const [saveMessage, setSaveMessage] = useState("Your workspace preferences are synced to the cloud database.");
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     const normalizedFormState = normalizeWorkspaceSettings(formState);
@@ -57,7 +57,7 @@ function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings 
                 <p className="text-xs font-semibold uppercase tracking-[0.32em] text-red-300/60">Workspace</p>
                 <h1 className="text-3xl font-bold text-zinc-50 sm:text-4xl">Settings</h1>
                 <p className="max-w-3xl text-sm leading-6 text-zinc-400 sm:text-base">
-                    Personalize your local Flowtrack workspace, invoice defaults, and interface preferences in one place.
+                    Personalize your Flowtrack workspace, invoice defaults, and interface preferences across all devices.
                 </p>
             </div>
 
@@ -172,8 +172,17 @@ function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings 
 }
 
 export default function SettingsPage() {
-    const { settings } = useSettings();
+    const { settings, isLoading } = useSettings();
     const settingsKey = JSON.stringify(settings);
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col gap-3 px-1">
+                <p className="text-xs font-semibold uppercase tracking-[0.32em] text-red-300/60 font-animate-pulse">Loading...</p>
+                <h1 className="text-3xl font-bold text-zinc-50 sm:text-4xl font-animate-pulse">Fetching preferences...</h1>
+            </div>
+        );
+    }
 
     return <SettingsForm key={settingsKey} initialSettings={settings} />;
 }

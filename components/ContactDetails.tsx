@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Building2, Mail, MoveRight, Phone, UserRound } from "lucide-react";
 import { useContacts } from '@/context/ContactContext';
 
-const formatCreatedAt = (createdAt?: string) => {
+const formatCreatedAt = (createdAt?: string | Date) => {
     if (!createdAt) {
         return "Saved contact";
     }

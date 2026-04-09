@@ -507,14 +507,24 @@ function InvoiceAddForm({
 
 function InvoiceAddPageClient() {
   const searchParams = useSearchParams();
-  const { invoices, addInvoice, updateInvoice } = useInvoices();
-  const { settings } = useSettings();
+  const { invoices, addInvoice, updateInvoice, isLoading: invoicesLoading } = useInvoices();
+  const { settings, isLoading: settingsLoading } = useSettings();
   const [todayString] = useState(() => new Date().toISOString().slice(0, 10));
   const editingId = Number(searchParams.get("invoice"));
   const editingInvoice = Number.isFinite(editingId)
     ? (invoices.find((invoice) => invoice.id === editingId) ?? null)
     : null;
   const nextInvoiceNumber = getNextInvoiceNumber(invoices);
+
+  if (invoicesLoading || settingsLoading) {
+    return (
+      <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-red-900 border-t-red-500" />
+        <p className="text-zinc-400">Loading workspace data...</p>
+      </div>
+    );
+  }
+
   const formKey = editingInvoice
     ? `invoice-edit-${editingInvoice.id}-${editingInvoice.updatedAt}`
     : `invoice-new-${nextInvoiceNumber}-${settings.defaultCurrency}-${settings.defaultTaxRate}-${settings.defaultNotes}`;

@@ -1,5 +1,6 @@
 'use client'
-import { createContext, useContext, useSyncExternalStore } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getSettings, updateSettingsAction } from "@/lib/actions/settings";
 
 export type DensityMode = "compact" | "comfortable";
 
@@ -18,8 +19,9 @@ export interface WorkspaceSettings {
 
 interface SettingsContextValue {
     settings: WorkspaceSettings;
-    updateSettings: (updates: Partial<WorkspaceSettings>) => void;
-    resetSettings: () => void;
+    isLoading: boolean;
+    updateSettings: (updates: Partial<WorkspaceSettings>) => Promise<void>;
+    resetSettings: () => Promise<void>;
 }
 
 export const defaultWorkspaceSettings: WorkspaceSettings = {
@@ -37,122 +39,45 @@ export const defaultWorkspaceSettings: WorkspaceSettings = {
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
-const SETTINGS_STORAGE_KEY = "flowtrack:settings";
-const SETTINGS_STORAGE_EVENT = "flowtrack:settings-updated";
-
-let cachedSettingsRaw: string | null = null;
-let cachedSettings: WorkspaceSettings = defaultWorkspaceSettings;
-
-const normalizeDensity = (density: unknown): DensityMode =>
-    density === "compact" ? "compact" : "comfortable";
-
-const normalizeSettings = (value: unknown): WorkspaceSettings => {
-    if (!value || typeof value !== "object") {
-        return defaultWorkspaceSettings;
-    }
-
-    const rawSettings = value as Partial<WorkspaceSettings>;
-    const parsedTaxRate = typeof rawSettings.defaultTaxRate === "number"
-        ? rawSettings.defaultTaxRate
-        : Number(rawSettings.defaultTaxRate ?? defaultWorkspaceSettings.defaultTaxRate);
-
-    return {
-        workspaceName: typeof rawSettings.workspaceName === "string" ? rawSettings.workspaceName : defaultWorkspaceSettings.workspaceName,
-        workspaceEmail: typeof rawSettings.workspaceEmail === "string" ? rawSettings.workspaceEmail : defaultWorkspaceSettings.workspaceEmail,
-        workspacePhone: typeof rawSettings.workspacePhone === "string" ? rawSettings.workspacePhone : defaultWorkspaceSettings.workspacePhone,
-        workspaceAddress: typeof rawSettings.workspaceAddress === "string" ? rawSettings.workspaceAddress : defaultWorkspaceSettings.workspaceAddress,
-        defaultCurrency: typeof rawSettings.defaultCurrency === "string" ? rawSettings.defaultCurrency : defaultWorkspaceSettings.defaultCurrency,
-        defaultTaxRate: Number.isFinite(parsedTaxRate) ? parsedTaxRate : defaultWorkspaceSettings.defaultTaxRate,
-        paymentTerms: typeof rawSettings.paymentTerms === "string" ? rawSettings.paymentTerms : defaultWorkspaceSettings.paymentTerms,
-        defaultNotes: typeof rawSettings.defaultNotes === "string" ? rawSettings.defaultNotes : defaultWorkspaceSettings.defaultNotes,
-        density: normalizeDensity(rawSettings.density),
-        showDashboardGreeting: typeof rawSettings.showDashboardGreeting === "boolean"
-            ? rawSettings.showDashboardGreeting
-            : defaultWorkspaceSettings.showDashboardGreeting,
-    };
-};
-
-const buildNormalizedSettings = (settings: WorkspaceSettings): WorkspaceSettings =>
-    normalizeSettings({
-        ...defaultWorkspaceSettings,
-        ...settings,
-    });
-
-const readSettings = (): WorkspaceSettings => {
-    if (typeof window === "undefined") {
-        return defaultWorkspaceSettings;
-    }
-
-    const savedSettings = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
-
-    if (!savedSettings) {
-        cachedSettingsRaw = null;
-        cachedSettings = defaultWorkspaceSettings;
-        return cachedSettings;
-    }
-
-    if (savedSettings === cachedSettingsRaw) {
-        return cachedSettings;
-    }
-
-    try {
-        const parsedSettings = JSON.parse(savedSettings);
-        cachedSettingsRaw = savedSettings;
-        cachedSettings = normalizeSettings(parsedSettings);
-        return cachedSettings;
-    } catch {
-        window.localStorage.removeItem(SETTINGS_STORAGE_KEY);
-        cachedSettingsRaw = null;
-        cachedSettings = defaultWorkspaceSettings;
-        return cachedSettings;
-    }
-};
-
-const subscribeToSettings = (callback: () => void) => {
-    if (typeof window === "undefined") {
-        return () => undefined;
-    }
-
-    const handleStorageChange = () => {
-        callback();
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener(SETTINGS_STORAGE_EVENT, handleStorageChange);
-
-    return () => {
-        window.removeEventListener("storage", handleStorageChange);
-        window.removeEventListener(SETTINGS_STORAGE_EVENT, handleStorageChange);
-    };
-};
-
-const saveSettings = (settings: WorkspaceSettings) => {
-    const normalizedSettings = buildNormalizedSettings(settings);
-    const serializedSettings = JSON.stringify(normalizedSettings);
-
-    cachedSettingsRaw = serializedSettings;
-    cachedSettings = normalizedSettings;
-
-    window.localStorage.setItem(SETTINGS_STORAGE_KEY, serializedSettings);
-    window.dispatchEvent(new Event(SETTINGS_STORAGE_EVENT));
-};
-
 export const SettingsProvider = ({ children }: { children: React.ReactNode }) => {
-    const settings = useSyncExternalStore(subscribeToSettings, readSettings, () => defaultWorkspaceSettings);
+    const [settings, setSettings] = useState<WorkspaceSettings>(defaultWorkspaceSettings);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const updateSettings = (updates: Partial<WorkspaceSettings>) => {
-        saveSettings(buildNormalizedSettings({
-            ...settings,
-            ...updates,
-        }));
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const dbSettings = await getSettings();
+                if (dbSettings) {
+                    setSettings(dbSettings as WorkspaceSettings);
+                }
+            } catch (error) {
+                console.error("Failed to load settings from DB:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadSettings();
+    }, []);
+
+    const updateSettings = async (updates: Partial<WorkspaceSettings>) => {
+        const newSettings = { ...settings, ...updates };
+        // Optimistic update
+        setSettings(newSettings);
+        
+        const result = await updateSettingsAction(newSettings);
+        if (!result.success) {
+            console.error("Failed to sync settings to DB:", result.error);
+            // Optionally revert on failure if needed
+        }
     };
 
-    const resetSettings = () => {
-        saveSettings(defaultWorkspaceSettings);
+    const resetSettings = async () => {
+        setSettings(defaultWorkspaceSettings);
+        await updateSettingsAction(defaultWorkspaceSettings);
     };
 
     return (
-        <SettingsContext.Provider value={{ settings, updateSettings, resetSettings }}>
+        <SettingsContext.Provider value={{ settings, isLoading, updateSettings, resetSettings }}>
             {children}
         </SettingsContext.Provider>
     );
