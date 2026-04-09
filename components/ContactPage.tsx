@@ -90,20 +90,10 @@ export default function ContactPage() {
   return (
     <div className="relative w-full space-y-6 md:space-y-8">
       <div className="flex flex-col gap-4 rounded-[2rem] border border-red-950/60 bg-red-950/20 p-5 shadow-[0_20px_90px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:p-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-red-900/50 bg-red-900/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-red-200/80">
-            <Users size={14} />
-            Contacts hub
-          </div>
-          <div className="space-y-2">
+        <div className="flex flex-col gap-1">
             <h1 className="text-3xl font-bold tracking-tight text-zinc-50 sm:text-4xl">
               Contacts
             </h1>
-            <p className="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-              Manage your people, right from the contacts page. Search, filter,
-              and update contact details in one polished workspace.
-            </p>
-          </div>
         </div>
 
         <button
@@ -117,10 +107,7 @@ export default function ContactPage() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-3xl border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/65">
-            Overview
-          </p>
-          <h2 className="mt-3 text-2xl font-semibold text-zinc-100">
+          <h2 className="text-2xl font-semibold text-zinc-100">
             Quick insights
           </h2>
           <p className="mt-2 text-sm leading-6 text-zinc-400">
@@ -128,7 +115,7 @@ export default function ContactPage() {
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="rounded-3xl bg-black/10 p-4 text-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-red-300/65">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-300/80">
                 Companies
               </p>
               <p className="mt-3 text-2xl font-semibold text-zinc-50">
@@ -136,7 +123,7 @@ export default function ContactPage() {
               </p>
             </div>
             <div className="rounded-3xl bg-black/10 p-4 text-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-red-300/65">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-300/80">
                 Saved contacts
               </p>
               <p className="mt-3 text-2xl font-semibold text-zinc-50">
@@ -149,10 +136,7 @@ export default function ContactPage() {
         <div className="rounded-3xl border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/65">
-                Search
-              </p>
-              <h2 className="mt-2 text-lg font-semibold text-zinc-100">
+              <h2 className="text-lg font-semibold text-zinc-100">
                 Find contacts
               </h2>
             </div>
@@ -195,10 +179,7 @@ export default function ContactPage() {
         <div className="rounded-3xl border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/65">
-                Status
-              </p>
-              <h2 className="mt-2 text-lg font-semibold text-zinc-100">
+              <h2 className="text-lg font-semibold text-zinc-100">
                 Current view
               </h2>
             </div>
@@ -214,12 +195,7 @@ export default function ContactPage() {
                   ? "No contacts match the current search and filter."
                   : `${filteredContacts.length} contact${filteredContacts.length === 1 ? "" : "s"} match your search.`}
             </p>
-            <div className="rounded-3xl border border-red-950/60 bg-black/10 p-4 text-zinc-200">
-              <div className="flex items-center gap-2 text-sm text-zinc-100">
-                <CheckCircle2 size={16} className="text-red-300" />
-                <span>Keep contact records concise and up to date.</span>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -227,9 +203,7 @@ export default function ContactPage() {
       {contacts.length === 0 ? (
         <div className="rounded-[2rem] border border-red-950/60 bg-red-950/30 px-6 py-10 text-zinc-300 backdrop-blur-sm sm:px-8">
           <div className="max-w-2xl space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-red-300/70">
-              No contacts yet
-            </p>
+
             <h2 className="text-3xl font-bold text-zinc-100">
               Start building your contact network.
             </h2>
@@ -243,9 +217,7 @@ export default function ContactPage() {
       ) : filteredContacts.length === 0 ? (
         <div className="rounded-[2rem] border border-red-950/60 bg-red-950/30 px-6 py-10 text-zinc-300 backdrop-blur-sm sm:px-8">
           <div className="max-w-2xl space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-red-300/70">
-              No results
-            </p>
+
             <h2 className="text-3xl font-bold text-zinc-100">
               No contacts found
             </h2>
@@ -277,18 +249,12 @@ export default function ContactPage() {
               </div>
 
               <div className="mt-5 space-y-4 text-sm text-zinc-300">
-                <div className="rounded-3xl border border-red-950/60 bg-black/10 p-4">
-                  <p className="text-xs uppercase tracking-[0.24em] text-red-300/65">
-                    Email
-                  </p>
+                  <div className="rounded-3xl border border-red-950/60 bg-black/10 p-4">
                   <p className="mt-2 break-words text-sm leading-6 text-zinc-100">
                     {contact.email || "No email"}
                   </p>
                 </div>
-                <div className="rounded-3xl border border-red-950/60 bg-black/10 p-4">
-                  <p className="text-xs uppercase tracking-[0.24em] text-red-300/65">
-                    Phone
-                  </p>
+                  <div className="rounded-3xl border border-red-950/60 bg-black/10 p-4">
                   <p className="mt-2 text-sm leading-6 text-zinc-100">
                     {contact.phone || "No phone"}
                   </p>

@@ -7,29 +7,25 @@ import { useSettings } from "@/context/SettingsContext";
 import ContactDetails from "@/components/ContactDetails";
 
 interface MetricCardProps {
-    eyebrow: string;
     title: string;
     value: string;
-    detail: string;
     icon: ReactNode;
     className?: string;
 }
 
-const MetricCard = ({ eyebrow, title, value, detail, icon, className = "" }: MetricCardProps) => (
+const MetricCard = ({ title, value, icon, className = "" }: MetricCardProps) => (
     <article className={`rounded-3xl border border-red-950/60 bg-red-950/35 backdrop-blur-md ${className}`}>
         <div className="flex h-full flex-col gap-5 p-5 sm:p-6">
             <div className="flex items-start justify-between gap-4">
-                <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/70">{eyebrow}</p>
+                <div className="space-y-1">
                     <h2 className="text-lg font-semibold text-zinc-100 sm:text-xl">{title}</h2>
                 </div>
                 <div className="rounded-2xl border border-red-900/70 bg-red-900/30 p-3 text-red-200">
                     {icon}
                 </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1">
                 <p className="text-3xl font-bold text-zinc-50 sm:text-4xl">{value}</p>
-                <p className="text-sm leading-6 text-zinc-400">{detail}</p>
             </div>
         </div>
     </article>
@@ -97,8 +93,7 @@ export default function Dashboard() {
     return (
       <div className="w-full space-y-8 md:space-y-10">
         {settings.showDashboardGreeting ? (
-          <div className="flex flex-col gap-3 px-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-red-300/60">Overview</p>
+          <div className="flex flex-col gap-1 px-1">
             <h1 className="text-3xl font-bold text-zinc-50 sm:text-4xl">{getHours()}</h1>
             <p className="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
               Here&apos;s a quick view of your contact activity and data quality across {settings.workspaceName}.
@@ -111,8 +106,7 @@ export default function Dashboard() {
             <div className="flex h-full flex-col justify-between gap-8 p-6 sm:p-7">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-200/70">Total Contacts</p>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <h2 className="text-4xl font-bold text-zinc-50 sm:text-5xl">{contacts.length}</h2>
                     <p className="max-w-xl text-sm leading-6 text-zinc-300 sm:text-base">{totalContactsLabel}</p>
                   </div>
@@ -141,26 +135,20 @@ export default function Dashboard() {
           </article>
 
           <MetricCard
-            eyebrow="Freshness"
             title="Recently Added"
             value={recentContacts.length.toString()}
-            detail={recentContacts.length === 0 ? "No new contacts were added in the last week." : "Contacts added within the last 7 days."}
             icon={<Clock3 size={20} />}
           />
 
           <MetricCard
-            eyebrow="Coverage"
             title="Companies Represented"
             value={companiesRepresented.toString()}
-            detail={companiesRepresented === 0 ? "No company names have been captured yet." : "Unique companies across your saved contacts."}
             icon={<BriefcaseBusiness size={20} />}
           />
 
           <MetricCard
-            eyebrow="Quality"
             title="Data Health"
             value={`${healthScore}%`}
-            detail={contacts.length === 0 ? "Add contacts to begin tracking profile completeness." : `${completeContacts} of ${contacts.length} contacts have every field filled in.`}
             icon={<CircleCheckBig size={20} />}
             className="md:col-span-2 xl:col-span-1"
           />

@@ -53,19 +53,14 @@ function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings 
 
     return (
         <div className="w-full space-y-8 md:space-y-10">
-            <div className="flex flex-col gap-3 px-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.32em] text-red-300/60">Workspace</p>
+            <div className="flex flex-col gap-1 px-1">
                 <h1 className="text-3xl font-bold text-zinc-50 sm:text-4xl">Settings</h1>
-                <p className="max-w-3xl text-sm leading-6 text-zinc-400 sm:text-base">
-                    Personalize your Flowtrack workspace, invoice defaults, and interface preferences across all devices.
-                </p>
             </div>
 
             <form onSubmit={handleSubmit} className="grid gap-5 xl:grid-cols-[1.5fr_0.85fr]">
                 <div className="space-y-5">
                     <section className="rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
-                        <div className="space-y-2">
-                            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-red-300/60"><Building2 size={14} />Workspace Profile</p>
+                        <div className="space-y-1">
                             <h2 className="text-2xl font-bold text-zinc-50">Business Identity</h2>
                         </div>
                         <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -89,8 +84,7 @@ function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings 
                     </section>
 
                     <section className="rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
-                        <div className="space-y-2">
-                            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-red-300/60"><CreditCard size={14} />Invoice Defaults</p>
+                        <div className="space-y-1">
                             <h2 className="text-2xl font-bold text-zinc-50">Billing Preferences</h2>
                         </div>
                         <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -114,8 +108,7 @@ function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings 
                     </section>
 
                     <section className="rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
-                        <div className="space-y-2">
-                            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-red-300/60"><LayoutGrid size={14} />UI Preferences</p>
+                        <div className="space-y-1">
                             <h2 className="text-2xl font-bold text-zinc-50">Interface Behavior</h2>
                         </div>
                         <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -144,8 +137,7 @@ function SettingsForm({ initialSettings }: { initialSettings: WorkspaceSettings 
 
                 <aside className="space-y-5">
                     <section className="rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
-                        <div className="space-y-2">
-                            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-red-300/60"><Sparkles size={14} />Live Summary</p>
+                        <div className="space-y-1">
                             <h2 className="text-2xl font-bold text-zinc-50">Current Defaults</h2>
                         </div>
                         <div className="mt-5 space-y-3 rounded-3xl border border-red-950/60 bg-black/10 p-4 text-sm leading-6 text-zinc-300">

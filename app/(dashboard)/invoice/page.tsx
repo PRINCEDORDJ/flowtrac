@@ -8,10 +8,8 @@ import { useSettings } from "@/context/SettingsContext";
 type InvoiceFilter = "all" | InvoiceStatus;
 
 interface InvoiceCardProps {
-    eyebrow: string;
     title: string;
     value: string;
-    detail: string;
     icon: ReactNode;
 }
 
@@ -53,19 +51,17 @@ const getStatusPillClassName = (status: InvoiceStatus) => {
     }
 };
 
-const InvoiceCard = ({ eyebrow, title, value, detail, icon }: InvoiceCardProps) => (
+const InvoiceCard = ({ title, value, icon }: InvoiceCardProps) => (
     <article className="rounded-3xl border border-red-950/60 bg-red-950/30 backdrop-blur-md">
         <div className="flex h-full flex-col gap-5 p-5 sm:p-6">
             <div className="flex items-start justify-between gap-4">
-                <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/65">{eyebrow}</p>
+                <div className="space-y-1">
                     <h2 className="text-lg font-semibold text-zinc-100">{title}</h2>
                 </div>
                 <div className="rounded-2xl border border-red-900/70 bg-red-900/25 p-3 text-red-200">{icon}</div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1">
                 <p className="text-3xl font-bold text-zinc-50 sm:text-4xl">{value}</p>
-                <p className="text-sm leading-6 text-zinc-400">{detail}</p>
             </div>
         </div>
     </article>
@@ -108,7 +104,7 @@ export default function InvoicePage() {
     return (
         <div className="w-full space-y-8 md:space-y-10">
             <div className="px-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.32em] text-red-300/60">Billing</p>
+
                 <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold text-zinc-50 sm:text-4xl">Invoice Manager</h1>
@@ -124,17 +120,17 @@ export default function InvoicePage() {
             </div>
 
             <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 xl:gap-5">
-                <InvoiceCard eyebrow="Volume" title="Total Invoices" value={String(invoicesWithStatus.length)} detail="All saved invoices in your local workspace." icon={<ReceiptText size={20} />} />
-                <InvoiceCard eyebrow="Action" title="Open Invoices" value={String(openInvoicesCount)} detail="Draft, sent, and overdue invoices still needing attention." icon={<FolderPen size={20} />} />
-                <InvoiceCard eyebrow="Revenue" title="Collected" value={formatCurrency(paidRevenue, settings.defaultCurrency)} detail="Paid invoice value collected so far." icon={<BadgeDollarSign size={20} />} />
-                <InvoiceCard eyebrow="Deadlines" title="Due Attention" value={String(overdueInvoices)} detail={dueSoonCount === 0 ? "No unpaid invoices due within 7 days." : `${dueSoonCount} unpaid invoices are due within the next 7 days.`} icon={<AlertTriangle size={20} />} />
+                <InvoiceCard title="Total Invoices" value={String(invoicesWithStatus.length)} icon={<ReceiptText size={20} />} />
+                <InvoiceCard title="Open Invoices" value={String(openInvoicesCount)} icon={<FolderPen size={20} />} />
+                <InvoiceCard title="Collected" value={formatCurrency(paidRevenue, settings.defaultCurrency)} icon={<BadgeDollarSign size={20} />} />
+                <InvoiceCard title="Due Attention" value={String(overdueInvoices)} icon={<AlertTriangle size={20} />} />
             </section>
 
             <section className="grid gap-5 xl:grid-cols-[1.6fr_0.8fr]">
                 <div className="space-y-5 rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                         <div className="space-y-2">
-                            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/60">Saved Invoices</p>
+
                             <h2 className="text-2xl font-bold text-zinc-50">Invoice Activity</h2>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -186,7 +182,7 @@ export default function InvoicePage() {
 
                 <aside className="space-y-4 rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
                     <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/60">Workspace Defaults</p>
+
                         <h2 className="text-2xl font-bold text-zinc-50">Billing Profile</h2>
                     </div>
                     <div className="rounded-3xl border border-red-950/60 bg-black/10 p-4 text-sm leading-6 text-zinc-300">
