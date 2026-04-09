@@ -15,6 +15,7 @@ async function verifyConnection() {
     console.log(`📝 Inserting test user: ${testEmail}...`);
     
     const [insertedUser] = await db.insert(users).values({
+      id: `test-user-${Date.now()}`,
       name: "Test User",
       email: testEmail,
     }).returning();
