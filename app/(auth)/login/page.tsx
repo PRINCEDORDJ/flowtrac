@@ -28,18 +28,26 @@ export default function LoginPage() {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <head>
+        <title>Sign in | FlowTrack</title>
+        <meta property="og:site_name" content="FlowTrack" />
+        <meta property="description" content="Sign in to your FlowTrack account to manage your workspace." />
+      </head>
+
       {/* Logo */}
       <div className="mb-8 flex flex-col items-center gap-2">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600 to-red-900 shadow-lg shadow-red-900/40">
-          <Zap size={22} className="fill-white text-white" />
-        </div>
-        <span className="text-xl font-bold tracking-tight text-white">FlowTrack</span>
+        <Link href="/" className="flex flex-col items-center gap-2">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600 to-red-900 shadow-lg shadow-red-900/40 transition-transform hover:scale-105 active:scale-95">
+            <Zap size={22} className="fill-white text-white" />
+          </div>
+          <span className="text-xl font-bold tracking-tight text-white">FlowTrack</span>
+        </Link>
       </div>
 
       {/* Card */}
       <div className="rounded-3xl border border-white/8 bg-white/3 p-8 shadow-2xl backdrop-blur-xl">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
           <p className="mt-1.5 text-sm text-zinc-400">Sign in to your FlowTrack workspace</p>
         </div>
 
@@ -140,16 +148,10 @@ export default function LoginPage() {
       {/* Footer */}
       <p className="mt-6 text-center text-sm text-zinc-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-medium text-red-400 transition hover:text-red-300">
+        <Link href="/register" className="font-medium text-red-400 transition hover:text-red-300 decoration-red-400/30 hover:underline hover:underline-offset-4">
           Create one free
         </Link>
       </p>
-
-      {/* Meta */}
-      <head>
-        <meta property="og:site_name" content="FlowTrack" />
-        <meta property="description" content="Sign in to your FlowTrack account." />
-      </head>
     </div>
   );
 }
