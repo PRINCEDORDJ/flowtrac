@@ -1,8 +1,10 @@
 "use client";
-
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight, Eye, EyeOff, Loader2, Zap } from "lucide-react";
+import Logo from '@/public/flow.png';
+
 
 const G_ID  = process.env.NEXT_PUBLIC_KINDE_GOOGLE_CONNECTION_ID;
 const GH_ID = process.env.NEXT_PUBLIC_KINDE_GITHUB_CONNECTION_ID;
@@ -38,7 +40,7 @@ export default function RegisterPage() {
       <div className="mb-8 flex flex-col items-center gap-2">
         <Link href="/" className="flex flex-col items-center gap-2">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600 to-red-900 shadow-lg shadow-red-900/40 transition-transform hover:scale-105 active:scale-95">
-            <Zap size={22} className="fill-white text-white" />
+            <Image src={Logo} width={28} height={28} alt="FT"/>
           </div>
           <span className="text-xl font-bold tracking-tight text-white">FlowTrack</span>
         </Link>

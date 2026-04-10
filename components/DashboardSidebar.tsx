@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, ReceiptText, Settings, LogOut, Menu as MenuIcon, X } from "lucide-react";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import Image from 'next/image'
+import Logo from '@/public/flow.png';
 
 const navItems = [
   {
@@ -43,7 +45,7 @@ export default function DashboardSidebar() {
           <div className="flex items-center justify-between px-2 mb-2 md:mb-5">
             <Link href="/dashboard" className="flex items-center gap-3 group transition-all" onClick={() => setIsOpen(false)}>
               <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-red-800/50 bg-red-950/40 p-2 shadow-[0_0_20px_rgba(153,27,27,0.2)] transition-all group-hover:border-red-600/80 group-hover:shadow-[0_0_30px_rgba(153,27,27,0.4)]">
-                  <h1 className="font-bold">FT</h1>
+                  <Image src={Logo} width={40} height={40} alt="FT"/>
               </div>
               <span className="text-xl font-bold tracking-tight bg-linear-to-b from-zinc-50 to-zinc-400 bg-clip-text text-transparent group-hover:from-white group-hover:to-zinc-200">
                   flowtrack
