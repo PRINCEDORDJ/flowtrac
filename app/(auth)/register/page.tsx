@@ -9,21 +9,22 @@ import Logo from '@/public/flow.png';
 const G_ID  = process.env.NEXT_PUBLIC_KINDE_GOOGLE_CONNECTION_ID;
 const GH_ID = process.env.NEXT_PUBLIC_KINDE_GITHUB_CONNECTION_ID;
 const AP_ID = process.env.NEXT_PUBLIC_KINDE_APPLE_CONNECTION_ID;
+const P_ID  = process.env.NEXT_PUBLIC_KINDE_PASSWORD_CONNECTION_ID;
 
 function socialHref(base: string, id?: string) {
   return id ? `${base}?connection_id=${id}` : base;
 }
 
 export default function RegisterPage() {
-  const [email, setEmail]       = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading]   = useState(false);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     const params = new URLSearchParams();
     if (email) params.set("login_hint", email);
+    if (P_ID) params.set("connection_id", P_ID);
     const qs = params.toString();
     window.location.href = `/api/auth/register${qs ? "?" + qs : ""}`;
   }
@@ -51,7 +52,7 @@ export default function RegisterPage() {
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold text-white tracking-tight">Create your account</h1>
           <p className="mt-1.5 text-sm text-zinc-400">
-            Start tracking your workflow for free — no credit card required
+            Enter your work email to get started
           </p>
         </div>
 
@@ -72,55 +73,18 @@ export default function RegisterPage() {
             />
           </div>
 
-          {/* Password */}
-          <div>
-            <label htmlFor="register-pass" className="mb-1.5 block text-xs font-medium text-zinc-400">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                id="register-pass"
-                type={showPass ? "text" : "password"}
-                placeholder="Min. 8 characters"
-                className="w-full rounded-xl border border-white/8 bg-white/5 px-4 py-3 pr-12 text-sm text-white placeholder-zinc-600 outline-none ring-red-500/40 transition focus:border-red-500/40 focus:ring-2 focus:bg-white/8"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPass((p) => !p)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 transition hover:text-zinc-300"
-                tabIndex={-1}
-                aria-label="Toggle password visibility"
-              >
-                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Terms */}
-          <p className="text-xs leading-relaxed text-zinc-600">
-            By creating an account, you agree to our{" "}
-            <span className="cursor-pointer text-zinc-400 underline underline-offset-2 transition hover:text-white">
-              Terms of Service
-            </span>{" "}
-            and{" "}
-            <span className="cursor-pointer text-zinc-400 underline underline-offset-2 transition hover:text-white">
-              Privacy Policy
-            </span>
-            .
-          </p>
-
           {/* Submit */}
           <button
             id="register-submit-btn"
             type="submit"
             disabled={loading || !email}
-            className="group mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-red-600 to-red-800 px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-red-900/30 transition-all hover:brightness-110 hover:shadow-red-900/50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-red-600 to-red-800 px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-red-900/30 transition-all hover:brightness-110 hover:shadow-red-900/50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <>
-                Get Started Free
+                Continue with Email
                 <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
               </>
             )}
