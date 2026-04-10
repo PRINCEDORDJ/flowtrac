@@ -3,15 +3,9 @@ import { NextRequest } from "next/server";
 
 export default function middleware(req: NextRequest) {
   return withAuth(req, {
-    // Custom auth pages + Kinde API routes + landing page are all public
+    // Specify the paths that should be accessible without authentication
     isPublic: [
       "/",
-      "/login",
-      "/register",
-      "/api/auth/login",
-      "/api/auth/register",
-      "/api/auth/callback",
-      "/api/auth/logout",
     ],
     // Redirect unauthenticated users to our custom login page
     loginPage: "/login",
@@ -20,6 +14,13 @@ export default function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    /*
+     * Match all request paths except:
+     * - login, register (custom auth pages)
+     * - api (includes /api/auth)
+     * - _next/static, _next/image (static files)
+     * - favicon.ico
+     */
+    "/((?!login|register|api|_next/static|_next/image|favicon.ico).*)",
   ],
 };
