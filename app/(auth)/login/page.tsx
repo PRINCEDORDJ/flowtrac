@@ -8,14 +8,14 @@ import Logo from '@/public/flow.png';
 const G_ID  = process.env.NEXT_PUBLIC_KINDE_GOOGLE_CONNECTION_ID;
 const GH_ID = process.env.NEXT_PUBLIC_KINDE_GITHUB_CONNECTION_ID;
 const AP_ID = process.env.NEXT_PUBLIC_KINDE_APPLE_CONNECTION_ID;
+const P_ID  = process.env.NEXT_PUBLIC_KINDE_PASSWORD_CONNECTION_ID;
 
 function socialHref(base: string, id?: string) {
   return id ? `${base}?connection_id=${id}` : base;
 }
 
 export default function LoginPage() {
-  const [email, setEmail]     = useState("");
-  const [showPass, setShowPass] = useState(false);
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
@@ -23,6 +23,7 @@ export default function LoginPage() {
     setLoading(true);
     const params = new URLSearchParams();
     if (email) params.set("login_hint", email);
+    if (P_ID) params.set("connection_id", P_ID);
     const qs = params.toString();
     window.location.href = `/api/auth/login${qs ? "?" + qs : ""}`;
   }
@@ -49,7 +50,7 @@ export default function LoginPage() {
       <div className="rounded-3xl border border-white/8 bg-white/3 p-8 shadow-2xl backdrop-blur-xl">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
-          <p className="mt-1.5 text-sm text-zinc-400">Sign in to your FlowTrack workspace</p>
+          <p className="mt-1.5 text-sm text-zinc-400">Enter your email to sign in to your workspace</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -69,35 +70,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Password */}
-          <div>
-            <div className="mb-1.5 flex items-center justify-between">
-              <label htmlFor="login-pass" className="text-xs font-medium text-zinc-400">
-                Password
-              </label>
-              <span className="cursor-pointer text-xs text-red-400 transition hover:text-red-300">
-                Forgot password?
-              </span>
-            </div>
-            <div className="relative">
-              <input
-                id="login-pass"
-                type={showPass ? "text" : "password"}
-                placeholder="••••••••"
-                className="w-full rounded-xl border border-white/8 bg-white/5 px-4 py-3 pr-12 text-sm text-white placeholder-zinc-600 outline-none ring-red-500/40 transition focus:border-red-500/40 focus:ring-2 focus:bg-white/8"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPass((p) => !p)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 transition hover:text-zinc-300"
-                tabIndex={-1}
-                aria-label="Toggle password visibility"
-              >
-                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
           {/* Submit */}
           <button
             id="login-submit-btn"
@@ -109,7 +81,7 @@ export default function LoginPage() {
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <>
-                Sign in
+                Continue with Email
                 <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
               </>
             )}
