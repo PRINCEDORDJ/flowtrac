@@ -34,101 +34,109 @@ export default function ContactDetails() {
         .slice(0, 4);
 
     return (
-      <section className="space-y-5 rounded-[1.75rem] border border-red-950/60 bg-red-950/25 p-5 backdrop-blur-md sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-red-300/60">Contact Spotlight</p>
+      <section className="relative overflow-hidden rounded-[2.5rem] border border-red-950/50 bg-linear-to-b from-red-950/30 via-red-950/15 to-black/20 p-6 backdrop-blur-xl sm:p-10">
+        {/* Background Decorative Element */}
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-red-600/5 blur-[100px]" />
+        
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-900/30 bg-red-950/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-red-400">
+              <span className="flex h-1 w-1 rounded-full bg-red-500 animate-pulse" />
+              Recent Network
+            </div>
             <div className="space-y-1">
-              <h2 className="text-2xl font-bold text-zinc-50">Recent Contact Details</h2>
-              <p className="max-w-2xl text-sm leading-6 text-zinc-400">
-                A quick look at the latest people in your workspace, with the details you’re most likely to need next.
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Contact <span className="text-red-500">Spotlight</span>
+              </h2>
+              <p className="max-w-xl text-sm leading-7 text-zinc-400">
+                A curated view of your most recent connections and their essential details.
               </p>
             </div>
           </div>
 
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 self-start rounded-full border border-red-800/70 bg-red-900/30 px-4 py-2 text-sm font-medium text-zinc-100 transition hover:bg-red-800/50"
+            className="group relative flex items-center gap-2 self-start overflow-hidden rounded-2xl bg-white px-6 py-3 text-sm font-bold text-black transition-all hover:pr-8 active:scale-95"
           >
-            Manage Contacts
-            <MoveRight size={16} />
+            <span className="relative z-10">Manage Contacts</span>
+            <MoveRight 
+              size={18} 
+              className="absolute right-3 opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1" 
+            />
           </Link>
         </div>
 
-        {recentContacts.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-red-900/60 bg-black/10 px-5 py-10 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-red-900/60 bg-red-950/40 text-red-200">
-              <UserRound size={24} />
+        <div className="relative mt-10">
+          {recentContacts.length === 0 ? (
+            <div className="flex min-h-[300px] flex-col items-center justify-center rounded-[2.5rem] border border-dashed border-red-900/30 bg-black/20 p-8 text-center">
+              <div className="relative mb-6">
+                <div className="absolute inset-0 animate-ping rounded-full bg-red-500/20" />
+                <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl border border-red-800/40 bg-red-950/50 text-red-400 shadow-[0_0_30px_rgba(239,68,68,0.15)]">
+                  <UserRound size={32} strokeWidth={1.5} />
+                </div>
+              </div>
+              <div className="max-w-xs space-y-2">
+                <h3 className="text-xl font-bold text-white">Your circle is empty</h3>
+                <p className="text-sm leading-relaxed text-zinc-500">
+                  Begin adding contacts to see your recent network activity highlighted here.
+                </p>
+              </div>
             </div>
-            <div className="mt-4 space-y-2">
-              <h3 className="text-lg font-semibold text-zinc-100">No contacts yet</h3>
-              <p className="text-sm leading-6 text-zinc-400">
-                Once you add contacts, their latest details will appear here for quick review.
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-            {recentContacts.map((contact) => (
-              <article
-                key={contact.id}
-                className="group rounded-3xl border border-red-950/70 bg-linear-to-br from-red-950/55 via-red-950/35 to-black/15 p-5 transition hover:border-red-800/70 hover:bg-red-950/45 sm:p-6"
-              >
-                <div className="flex h-full flex-col gap-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-2">
-                      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300/65">
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {recentContacts.map((contact) => (
+                <article
+                  key={contact.id}
+                  className="group relative overflow-hidden rounded-[2rem] border border-red-950/60 bg-linear-to-br from-red-950/40 via-red-950/10 to-transparent p-6 transition-all duration-500 hover:-translate-y-1 hover:border-red-500/40 hover:bg-red-950/30 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]"
+                >
+                  <div className="absolute inset-0 translate-x-[-100%] bg-linear-to-r from-transparent via-red-500/5 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
+                  
+                  <div className="relative flex flex-col gap-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-red-900/40 bg-linear-to-br from-red-600/10 to-red-950/50 text-red-400 shadow-inner group-hover:border-red-500/50 group-hover:text-red-300">
+                          <UserRound size={24} />
+                        </div>
+                        <div className="space-y-1">
+                          <h3 className="text-xl font-bold text-white group-hover:text-red-50">{contact.name}</h3>
+                          <div className="flex items-center gap-2 text-xs font-medium text-zinc-500">
+                            <Building2 size={12} className="text-red-500" />
+                            {contact.company.trim() || "Independent"}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="rounded-full border border-red-900/30 bg-red-950/40 px-3 py-1 text-[10px] font-bold text-red-300/60">
                         {formatCreatedAt(contact.createdAt)}
-                      </p>
-                      <div className="space-y-1">
-                        <h3 className="text-xl font-semibold text-zinc-50">{contact.name}</h3>
-                        <p className="text-sm text-zinc-400">
-                          {contact.company.trim() || "No company added"}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-red-950/40 bg-black/20 p-4 transition-colors group-hover:bg-black/30">
+                        <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-red-400/70">
+                          <Mail size={12} />
+                          Email Address
+                        </div>
+                        <p className="truncate text-sm font-medium text-zinc-300 group-hover:text-zinc-100">
+                          {contact.email.trim() || "—"}
+                        </p>
+                      </div>
+
+                      <div className="rounded-2xl border border-red-950/40 bg-black/20 p-4 transition-colors group-hover:bg-black/30">
+                        <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-red-400/70">
+                          <Phone size={12} />
+                          Phone Number
+                        </div>
+                        <p className="truncate text-sm font-medium text-zinc-300 group-hover:text-zinc-100">
+                          {contact.phone.trim() || "—"}
                         </p>
                       </div>
                     </div>
-
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-red-900/70 bg-red-900/25 text-red-200">
-                      <UserRound size={22} />
-                    </div>
                   </div>
-
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-red-950/60 bg-black/10 p-4">
-                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/60">
-                        <Mail size={14} />
-                        Email
-                      </div>
-                      <p className="mt-3 wrap-break-word text-sm leading-6 text-zinc-200">
-                        {contact.email.trim() || "No email added"}
-                      </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-red-950/60 bg-black/10 p-4">
-                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/60">
-                        <Phone size={14} />
-                        Phone
-                      </div>
-                      <p className="mt-3 text-sm leading-6 text-zinc-200">
-                        {contact.phone.trim() || "No phone added"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-red-950/60 bg-black/10 p-4">
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/60">
-                      <Building2 size={14} />
-                      Company
-                    </div>
-                    <p className="mt-3 text-sm leading-6 text-zinc-200">
-                      {contact.company.trim() || "No company added"}
-                    </p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     );
 }
