@@ -1,9 +1,20 @@
 import { withAuth } from "@kinde-oss/kinde-auth-nextjs/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export default function middleware(req: NextRequest) {
   return withAuth(req, {
-    isPublic: ["/", "/api/auth/login", "/api/auth/register", "/api/auth/callback"],
+    // Custom auth pages + Kinde API routes + landing page are all public
+    isPublic: [
+      "/",
+      "/login",
+      "/register",
+      "/api/auth/login",
+      "/api/auth/register",
+      "/api/auth/callback",
+      "/api/auth/logout",
+    ],
+    // Redirect unauthenticated users to our custom login page
+    loginPage: "/login",
   });
 }
 
