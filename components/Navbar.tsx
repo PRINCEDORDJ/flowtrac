@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 export default function Navbar() {
   return (
@@ -15,12 +14,12 @@ export default function Navbar() {
             Features
           </Link>
           <div className="h-4 w-px bg-white/10" />
-          <LoginLink className="text-sm font-medium text-zinc-400 transition hover:text-white">
+          <Link href="/login" className="text-sm font-medium text-zinc-400 transition hover:text-white">
             Log in
-          </LoginLink>
-          <RegisterLink className="rounded-full bg-white px-5 py-2 text-sm font-bold text-black transition hover:bg-zinc-200">
+          </Link>
+          <Link href="/register" className="rounded-full bg-white px-5 py-2 text-sm font-bold text-black transition hover:bg-zinc-200">
             Get Started
-          </RegisterLink>
+          </Link>
         </div>
       </div>
     </nav>

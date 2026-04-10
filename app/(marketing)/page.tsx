@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
@@ -40,10 +39,10 @@ export default async function Home() {
           </p>
           
           <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row">
-            <RegisterLink className="group relative flex items-center gap-2 rounded-full bg-linear-to-b from-red-600 to-red-800 px-8 py-4 font-bold shadow-[0_0_40px_rgba(220,38,38,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_60px_rgba(220,38,38,0.5)]">
+            <Link href="/register" className="group relative flex items-center gap-2 rounded-full bg-linear-to-b from-red-600 to-red-800 px-8 py-4 font-bold shadow-[0_0_40px_rgba(220,38,38,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_60px_rgba(220,38,38,0.5)]">
               Start Building Now
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-            </RegisterLink>
+            </Link>
             <Link href="#features" className="rounded-full border border-white/10 bg-white/5 px-8 py-4 font-bold transition hover:bg-white/10">
               See How It Works
             </Link>
@@ -126,9 +125,9 @@ export default async function Home() {
              Join hundreds of developers and businesses using FlowTrack to manage their operations with precision.
           </p>
           <div className="mt-10">
-            <RegisterLink className="rounded-full bg-white px-10 py-5 text-lg font-bold text-black transition hover:bg-zinc-200">
+            <Link href="/register" className="rounded-full bg-white px-10 py-5 text-lg font-bold text-black transition hover:bg-zinc-200">
               Create Free Account
-            </RegisterLink>
+            </Link>
           </div>
         </section>
       </main>
