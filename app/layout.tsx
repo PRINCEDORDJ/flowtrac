@@ -5,6 +5,7 @@ import { InvoiceProvider } from "@/context/InvoiceContext";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -38,6 +39,7 @@ export default function RootLayout({
             </InvoiceProvider>
           </SettingsProvider>
         </ContactProvider>
+        <Analytics />
       </body>
     </html>
   );
